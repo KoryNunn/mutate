@@ -13,6 +13,10 @@ Simulation.prototype.tick = function(){
     var simulation = this;
 
     setTimeout(function(){
+        if(!simulation.lives.length){
+            console.log('all life dead');
+            return;
+        }
         for(var i = 0; i < simulation.lives.length; i++) {
             simulation.lives[i].live();
         }
@@ -21,7 +25,7 @@ Simulation.prototype.tick = function(){
 };
 Simulation.prototype.updateStats = function(life){
     this.stats.longestLife = Math.max(this.stats.longestLife, (life.deathDate || new Date()) - life.birthDate);
-    this.stats.mostChildren = Math.max(this.stats.mostChildren, life.entity.children.length);
+    this.stats.mostChildren = Math.max(this.stats.mostChildren, life.children.length);
     this.stats.fastestBreeder = Math.min(this.stats.fastestBreeder, life.entity.breedTime);
     this.stats.highestStrength = Math.max(this.stats.highestStrength, life.entity.strength);
 };
@@ -37,6 +41,9 @@ Simulation.prototype.addLife = function(life){
 
     life.on('death', function(){
         simulation.lives.splice(simulation.lives.indexOf(life), 1);
+        if(simulation.stats.longestLife <= life.deathDate - life.birthDate){
+            simulation.stats.bestEntity = life.entity;
+        }
     });
 
     this.lives.push(life);

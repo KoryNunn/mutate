@@ -3,6 +3,17 @@ var log = require('./createLog'),
     simulation = new Simulation(),
     Life = require('./life');
 
+if(typeof window !== 'undefined'){
+    window.onerror = function(error){
+        log(error);
+    };
+}else{
+    process.on('uncaughtException', function(error) {
+        // handle the error safely
+        log(error);
+    });
+}
+
 simulation.addLife(new Life());
 
 simulation.tick();

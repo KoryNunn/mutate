@@ -1,5 +1,6 @@
 var log = require('./createLog'),
     EventEmitter = require('events').EventEmitter,
+    mutate = require('./mutate'),
     createMutant = require('./createMutant');
 
 function attack(life1, life2){
@@ -19,6 +20,7 @@ function considerAttack(life1, life2){
 
 function Life(parent){
     this.parent = parent;
+    this.children = [];
 }
 Life.prototype = Object.create(EventEmitter.prototype);
 Life.prototype.constructor = Life;
@@ -26,27 +28,25 @@ Life.prototype.begin = function() {
     this.id = this.simulation.totalLives;
     log('new life: ' + this.id);
     this.entity = createMutant(this.parent);
-    this.entity.life = this;
-    this.birthDate = this.lastBirthTime = new Date();
+    this.birthDate = this.lastBreedTime = new Date();
 };
 Life.prototype.live = function() {
     var now = new Date(),
         life = this,
         entity = this.entity;
 
-    if(now - life.birthDate > entity.lifespan){
-        life.die('Old age');
-        return;
-    }
+    // Age degradation
+    mutate(life.entity, 0.01);
 
     considerAttack(life, life.simulation.getRandomLife());
 
-    if(now - life.lastBirthTime > entity.breedTime){
-        try{
-            entity.breed();
-            life.lastBirthTime = now;
-        }catch(e){
-            //console.log(e);
+    if(now - life.lastBreedTime > entity.breedTime){
+
+        var child = entity.breed(life);
+
+        life.lastBreedTime = now;
+
+        if(!child){
             life.die('During birth');
         }
     }
@@ -56,6 +56,7 @@ Life.prototype.live = function() {
 Life.prototype.die = function(reason){
     log('entity died: ' + reason);
     this.deathDate = new Date();
+    this.lifespan = this.deathDate - this.birthDate;
     this.dead = true;
     this.emit('death');
 };
