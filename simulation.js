@@ -4,7 +4,8 @@ function Simulation(){
         longestLife: 0,
         mostChildren: 0,
         fastestBreeder: Number.MAX_VALUE,
-        highestStrength: 0
+        highestStrength: 0,
+        highestAggression: 0
     };
 
     this.lives = [];
@@ -40,6 +41,7 @@ Simulation.prototype.updateStats = function(life){
     this.stats.mostChildren = Math.max(this.stats.mostChildren, life.children.length);
     this.stats.fastestBreeder = Math.min(this.stats.fastestBreeder, life.entity.breedTime);
     this.stats.highestStrength = Math.max(this.stats.highestStrength, life.entity.strength);
+    this.stats.highestAggression = Math.max(this.stats.highestAggression, life.entity.aggression);
 };
 Simulation.prototype.getRandomLife = function(){
     return this.lives[Math.floor(Math.random() * this.lives.length)];

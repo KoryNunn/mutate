@@ -17,7 +17,7 @@ function considerAttack(life1, life2){
     if(life1 === life2){
         return;
     }
-    if(Math.random() * 100 < 1){
+    if(Math.random() * (1000000 / life1.simulation.lives.length / life1.entity.aggression) < 1){
         attack(life1, life2);
     }
 }
@@ -40,7 +40,7 @@ Life.prototype.live = function() {
         entity = this.entity;
 
     // Age degradation
-    life.entity = mutate(life.entity, 1000000);
+    life.entity = mutate(life.entity, 100000);
 
     try{
         life.entity.alive()

@@ -1,6 +1,7 @@
 function createEntity(){
     var entity = {
         breedTime: 100,
+        aggression: 10,
         strength: 10,
         health: 100,
         breed: function(life){
