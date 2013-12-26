@@ -1,3 +1,4 @@
+var EventEmitter = require('events').EventEmitter;
 function Simulation(){
     this.stats = {
         longestLife: 0,
@@ -8,20 +9,31 @@ function Simulation(){
 
     this.lives = [];
 }
+Simulation.prototype = Object.create(EventEmitter.prototype);
+Simulation.constructor = Simulation;
 Simulation.prototype.totalLives = 0;
+Simulation.prototype.itterater = 0;
 Simulation.prototype.tick = function(){
-    var simulation = this;
+    var simulation = this,
+        startTime = Date.now();
 
-    setTimeout(function(){
+    this.emit('tick');
+
+    while(Date.now() - startTime < 100){
         if(!simulation.lives.length){
             console.log('all life dead');
             return;
         }
-        for(var i = 0; i < simulation.lives.length; i++) {
-            simulation.lives[i].live();
-        }
+        try{
+            simulation.lives[simulation.itterater].live();
+        }catch(e){}
+        simulation.itterater = (simulation.itterater + 1) % simulation.lives.length;
+        //console.log('itterater: ' + simulation.itterater, simulation.lives.length);
+    };
+
+    setTimeout(function(){
         simulation.tick();
-    }, 100);
+    },0);
 };
 Simulation.prototype.updateStats = function(life){
     this.stats.longestLife = Math.max(this.stats.longestLife, (life.deathDate || new Date()) - life.birthDate);

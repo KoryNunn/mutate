@@ -3,7 +3,7 @@ var createEntity = require('./createEntity');
 
 function createMutant(parent){
     parent = parent || createEntity();
-    return mutate(parent);
+    return mutate(parent, 1000);
 }
 
 module.exports = createMutant;

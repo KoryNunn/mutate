@@ -1,5 +1,5 @@
 function mutateNumber(num, magnatude){
-    var range = (num * magnatude),
+    var range = (num / magnatude),
         random = Math.random() * range;
     return num + (random - range / 2);
 }
@@ -8,7 +8,7 @@ var possibleChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456
 function mutateString(string, magnatude){
     var mutatedString = '';
     for(var i = 0; i < string.length; i++) {
-        var randomNum = Math.random() / magnatude;
+        var randomNum = Math.random() * magnatude;
         if(randomNum < 1){
             mutatedString += possibleChars.charAt(parseInt(Math.random() * possibleChars.length));
             continue;
@@ -20,12 +20,18 @@ function mutateString(string, magnatude){
 
 function mutateFunction(func, magnatude){
     var funcString = func.toString(),
+        mutatedFunctionSource,
         mutatedFunction,
         trys = 0;
 
     while(!mutatedFunction && trys < 10){
         trys++;
-        mutatedFunction = new Function('return ' + mutateString(funcString))();
+        try{
+            mutatedFunctionSource = mutateString(funcString, magnatude);
+            mutatedFunction = new Function('return ' + mutatedFunctionSource)();
+        }catch(e){
+            //console.log(mutatedFunctionSource);
+        };
     }
 
     return mutatedFunction;

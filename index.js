@@ -16,10 +16,10 @@ if(typeof window !== 'undefined'){
 
 simulation.addLife(new Life());
 
-simulation.tick();
-
-setInterval(function(){
+simulation.on('tick', function(){
     console.log(simulation.lives.length);
     log.print(-10);
     console.log(JSON.stringify(simulation.stats));
-},1000);
+});
+
+simulation.tick();

@@ -13,7 +13,11 @@ function attack(life1, life2){
 }
 
 function considerAttack(life1, life2){
-    if(Math.random() * 10 < 1){
+    // Don't attack yourself..
+    if(life1 === life2){
+        return;
+    }
+    if(Math.random() * 100 < 1){
         attack(life1, life2);
     }
 }
@@ -27,28 +31,39 @@ Life.prototype.constructor = Life;
 Life.prototype.begin = function() {
     this.id = this.simulation.totalLives;
     log('new life: ' + this.id);
-    this.entity = createMutant(this.parent);
+    this.entity = createMutant(this.parent && this.parent.entity);
     this.birthDate = this.lastBreedTime = new Date();
 };
 Life.prototype.live = function() {
-    var now = new Date(),
+    var now = Date.now(),
         life = this,
         entity = this.entity;
 
     // Age degradation
-    mutate(life.entity, 0.01);
+    life.entity = mutate(life.entity, 1000000);
+
+    try{
+        life.entity.alive()
+    }catch(error){
+        life.die('Old age.');
+    }
 
     considerAttack(life, life.simulation.getRandomLife());
 
     if(now - life.lastBreedTime > entity.breedTime){
+        if(entity.breed){
+            var child = entity.breed(life);
 
-        var child = entity.breed(life);
+            if(!child){
+                life.die('During birth');
+            }else{
+                life.simulation.addLife(child);
+
+                life.children.push(child);
+            }
+        }
 
         life.lastBreedTime = now;
-
-        if(!child){
-            life.die('During birth');
-        }
     }
 
     this.simulation.updateStats(this);
