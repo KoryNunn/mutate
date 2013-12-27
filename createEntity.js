@@ -7,6 +7,13 @@ function createEntity(){
         breed: function(life){
             return new life.constructor(life);
         },
+        attack: function(code){
+            var sourceChars = code.split('')
+
+            sourceChars.splice(Math.random() * code.length, this.strength);
+
+            return sourceChars.join('');
+        },
         // simulates brainstem. If this doesn't exist, entity is dead.
         alive: function(){
 
