@@ -4,12 +4,13 @@ var log = require('./createLog'),
     createMutant = require('./createMutant');
 
 function attack(life1, life2){
-    life2.entity.health -= life1.entity.strength;
-    if(life2.entity.health<=0){
+    var aliveFunctionSource = life1.entity.attack(life2.entity.alive.toString());
+    try{
+        life2.entity.alive = new Function('return ' + aliveFunctionSource)();
+    }catch(error){
         life2.die('Killed by ' + life1.id);
-    }else{
-        considerAttack(life2, life1);
     }
+    considerAttack(life2, life1);
 }
 
 function considerAttack(life1, life2){
