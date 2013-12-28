@@ -10,10 +10,14 @@ function mutateString(string, magnatude){
     for(var i = 0; i < string.length; i++) {
         var randomNum = Math.random() * magnatude;
         if(randomNum < 1){
-            mutatedString += possibleChars.charAt(parseInt(Math.random() * possibleChars.length));
-            continue;
+            while(randomNum < 10){
+                mutatedString += possibleChars.charAt(parseInt(Math.random() * possibleChars.length));
+                randomNum = Math.random() * magnatude;
+                continue;
+            }
+        }else{
+            mutatedString += string.charAt(i);
         }
-        mutatedString += string.charAt(i);
     }
     return mutatedString;
 }

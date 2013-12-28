@@ -1,6 +1,7 @@
 var EventEmitter = require('events').EventEmitter;
 function Simulation(){
     this.stats = {
+        mostLife: 0,
         longestLife: 0,
         mostChildren: 0,
         fastestBreeder: Number.MAX_VALUE,
@@ -40,6 +41,7 @@ Simulation.prototype.tick = function(){
     },0);
 };
 Simulation.prototype.updateStats = function(life){
+    this.stats.mostLife = Math.max(this.stats.mostLife, life.entity.alive.toString().length);
     this.stats.longestLife = Math.max(this.stats.longestLife, (life.deathDate || new Date()) - life.birthDate);
     this.stats.mostChildren = Math.max(this.stats.mostChildren, life.children.length);
     this.stats.fastestBreeder = Math.min(this.stats.fastestBreeder, life.entity.breedTime);
