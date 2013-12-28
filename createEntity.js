@@ -4,6 +4,8 @@ function createEntity(){
         aggression: 10,
         strength: 10,
         health: 100,
+        energy: 1000,
+        efficiency: 0.1,
         breed: function(life){
             return new life.constructor(life);
         },

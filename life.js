@@ -18,6 +18,8 @@ function considerAttack(life1, life2){
         return;
     }
     if(Math.random() * (1000000 / life1.simulation.lives.length / life1.entity.aggression) < 1){
+        life.useEnergy(100);
+
         attack(life1, life2);
     }
 }
@@ -34,10 +36,20 @@ Life.prototype.begin = function() {
     this.entity = createMutant(this.parent && this.parent.entity);
     this.birthDate = this.lastBreedTime = new Date();
 };
+Life.prototype.useEnergy = function(amount){
+    this.entity.energy -= amount;
+    if(this.entity.energy <= 0){
+        this.die('Starvation');
+    }
+};
+Life.prototype.eat = function(amount){
+    this.entity.energy += amount * this.entity.efficiency;
+};
 Life.prototype.live = function() {
     var now = Date.now(),
         life = this,
         entity = this.entity;
+
 
     // Age degradation
     life.entity = mutate(life.entity, 100000);
@@ -47,6 +59,11 @@ Life.prototype.live = function() {
     }catch(error){
         life.die('Old age.');
     }
+
+
+    life.useEnergy(5);
+
+    life.eat(life.simulation.getFood());
 
     considerAttack(life, life.simulation.getRandomLife());
 
@@ -73,7 +90,7 @@ Life.prototype.die = function(reason){
     this.deathDate = new Date();
     this.lifespan = this.deathDate - this.birthDate;
     this.dead = true;
-    this.emit('death');
+    this.emit('death', reason);
 };
 
 module.exports = Life;

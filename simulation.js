@@ -5,7 +5,8 @@ function Simulation(){
         mostChildren: 0,
         fastestBreeder: Number.MAX_VALUE,
         highestStrength: 0,
-        highestAggression: 0
+        highestAggression: 0,
+        deaths: {}
     };
 
     this.lives = [];
@@ -32,6 +33,8 @@ Simulation.prototype.tick = function(){
         //console.log('itterater: ' + simulation.itterater, simulation.lives.length);
     };
 
+    simulation.stats.populationSize = simulation.lives.length;
+
     setTimeout(function(){
         simulation.tick();
     },0);
@@ -46,6 +49,9 @@ Simulation.prototype.updateStats = function(life){
 Simulation.prototype.getRandomLife = function(){
     return this.lives[Math.floor(Math.random() * this.lives.length)];
 }
+Simulation.prototype.getFood = function(){
+    return Math.min(100, 100 / this.lives.length);
+};
 Simulation.prototype.addLife = function(life){
     var simulation = this;
 
@@ -53,8 +59,12 @@ Simulation.prototype.addLife = function(life){
 
     life.begin();
 
-    life.on('death', function(){
+    life.on('death', function(reason){
         simulation.lives.splice(simulation.lives.indexOf(life), 1);
+        if(simulation.stats.deaths[reason] == null){
+            simulation.stats.deaths[reason] = 0;
+        }
+        simulation.stats.deaths[reason]++;
         if(simulation.stats.longestLife <= life.deathDate - life.birthDate){
             simulation.stats.bestEntity = life.entity;
         }
