@@ -3,7 +3,6 @@ function createEntity(){
         breedTime: 100,
         aggression: 10,
         strength: 10,
-        health: 100,
         energy: 1000,
         efficiency: 0.1,
         breed: function(life){

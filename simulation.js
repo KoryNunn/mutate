@@ -36,7 +36,7 @@ Simulation.prototype.tick = function(){
 
     simulation.stats.populationSize = simulation.lives.length;
 
-    setTimeout(function(){
+    (process.nextTick || setTimeout)(function(){
         simulation.tick();
     },0);
 };
