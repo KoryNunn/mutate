@@ -1,16 +1,18 @@
 function createEntity(){
     var entity = {
-        breedTime: 100,
+        breedTime: 200,
         aggression: 10,
         strength: 10,
-        health: 100,
+        grazeSpeed: 10,
         energy: 1000,
+        idleEnergy: 2,
+        fightEnergy: 50,
         efficiency: 0.1,
         breed: function(life){
             return new life.constructor(life);
         },
         attack: function(code){
-            var sourceChars = code.split('')
+            var sourceChars = code.split('');
 
             sourceChars.splice(Math.random() * code.length, this.strength);
 
